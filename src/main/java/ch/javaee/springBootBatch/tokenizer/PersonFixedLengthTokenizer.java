@@ -4,9 +4,9 @@ import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.batch.item.file.transform.RangeArrayPropertyEditor;
 
-public class PersonFixedLineTokenizer extends FixedLengthTokenizer {
+public class PersonFixedLengthTokenizer extends FixedLengthTokenizer {
 
-    public PersonFixedLineTokenizer() {
+    public PersonFixedLengthTokenizer() {
         RangeArrayPropertyEditor range = new RangeArrayPropertyEditor();
         // we defines how to split the text line, from column 1 to 30 assign the content to 'firstName'
         range.setAsText("1-30,31-60,61-");

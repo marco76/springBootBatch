@@ -1,0 +1,68 @@
+In this tutorial I show how to use Spring Boot to create a simple Spring Batch application.
+I used the same architecture in a production software. Spring Boot is great to improve productivity but the documentation is still sparse (the framework is still in 0.5 version).
+
+You can find the complete example here:
+<a href="http://github.com/marco76/springBootBatch">http://github.com/marco76/springBootBatch</a>
+
+The only requirement is to have a mysql database installed.
+
+<h2>Spring boot</h2>
+Spring boot offers to the developer some great feature to improve his productivity:
+<ul>
+    <li>bootable jar even for webapps</li>
+    <li>auto-import of the required libraries</li>
+    <li>autoconfiguration (convention over configuration)</li>
+</ul>
+
+<br/>
+<p>
+    The main difficulties I encountered:
+<ul>
+    <li>the configuration by annotation is still 'immature' in Spring (ex. cli parameters issue)</li>
+    <li>the auto configuration hides some parameters to the developer and, because of this, there are some surprising results
+</p>
+
+<h2> Tutorial </h2>
+<p>For the tutorial we load a fixed line flat file in a MySql database</p>
+
+<h3> we define the pom.xml </h3>
+We have to declare a parent, this is mandatory:
+[xml]
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>0.5.0.M5</version>
+</parent>
+[/xml]
+
+Because we use Spring Batch, JPA and Mysql we declare the following dependencies:
+[xml]
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-batch</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.26</version>
+    </dependency>
+</dependencies>
+[/xml]
+
+<h3>Input flat file</h3>
+<p>
+    The input fixed length flat file defines has this structure:
+    Columns 1-30: first name
+    Columns 31-60: family name
+    Columns >61: year
+</p>
+
+<h3>import.sql</h3>
+We created an import.sql script to avoid a current limitation of Spring Batch that doesn't work well in reading parameters passed to the CommandLineJobRunner. The script delete all the tables created by Spring to check and update the batch status.
+This script is automatically found by Hibernate when it creates the database.
+

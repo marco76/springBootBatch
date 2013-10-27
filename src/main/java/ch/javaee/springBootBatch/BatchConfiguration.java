@@ -2,7 +2,7 @@ package ch.javaee.springBootBatch;
 
 import ch.javaee.springBootBatch.model.Person;
 import ch.javaee.springBootBatch.processor.PersonItemProcessor;
-import ch.javaee.springBootBatch.tokenizer.PersonFixedLineTokenizer;
+import ch.javaee.springBootBatch.tokenizer.PersonFixedLengthTokenizer;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -24,14 +24,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -72,7 +69,7 @@ public class BatchConfiguration {
         // we use a default line mapper to assign the content of each line to the Person object
         reader.setLineMapper(new DefaultLineMapper<Person>() {{
             // we use a custom fixed line tokenizer
-            setLineTokenizer(new PersonFixedLineTokenizer());
+            setLineTokenizer(new PersonFixedLengthTokenizer());
             // as field mapper we use the name of the fields in the Person class
             setFieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {{
                 // we create an object Person
@@ -174,17 +171,6 @@ public class BatchConfiguration {
         return lef;
     }
 
-    @Bean
-    public EntityManager entityManger() {
-        return entityManagerFactory().getObject().createEntityManager();
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        return txManager;
-    }
 
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
