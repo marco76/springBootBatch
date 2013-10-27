@@ -16,12 +16,13 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -32,7 +33,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
-import java.io.File;
 import java.util.Properties;
 
 
@@ -43,6 +43,18 @@ import java.util.Properties;
 @ComponentScan
 @PropertySource("classpath:application.properties")
 public class BatchConfiguration {
+    private
+    @Value("${database.driver}")
+    String databaseDriver;
+    private
+    @Value("${database.url}")
+    String databaseUrl;
+    private
+    @Value("${database.username}")
+    String databaseUsername;
+    private
+    @Value("${database.password}")
+    String databasePassword;
 
 
     /**
@@ -55,7 +67,7 @@ public class BatchConfiguration {
         // we read a flat file that will be used to fill a Person object
         FlatFileItemReader<Person> reader = new FlatFileItemReader<Person>();
         // we pass as parameter the flat file directory
-        reader.setResource(new FileSystemResource(new File("/Users/marco/Documents/PersonData.txt")));
+        reader.setResource(new ClassPathResource("PersonData.txt"));
         // we use a default line mapper to assign the content of each line to the Person object
         reader.setLineMapper(new DefaultLineMapper<Person>() {{
             // we use a custom fixed line tokenizer
@@ -80,6 +92,7 @@ public class BatchConfiguration {
         return new PersonItemProcessor();
     }
 
+
     @Bean
     public ItemWriter<Person> writer() {
         JpaItemWriter writer = new JpaItemWriter<Person>();
@@ -88,16 +101,34 @@ public class BatchConfiguration {
         return writer;
     }
 
-
+    /**
+     * This method declare the steps that the batch has to follow
+     *
+     * @param jobs
+     * @param s1
+     * @return
+     */
     @Bean
     public Job importPerson(JobBuilderFactory jobs, Step s1) {
 
         return jobs.get("import")
-                .incrementer(new RunIdIncrementer())
+                .incrementer(new RunIdIncrementer()) // because a spring config bug, this incrementer is not really useful
                 .flow(s1)
                 .end()
                 .build();
     }
+
+
+    /**
+     * Step
+     * We declare that every 1000 lines processed the data has to be committed
+     *
+     * @param stepBuilderFactory
+     * @param reader
+     * @param writer
+     * @param processor
+     * @return
+     */
 
     @Bean
     public Step step1(StepBuilderFactory stepBuilderFactory, ItemReader<Person> reader,
@@ -110,13 +141,19 @@ public class BatchConfiguration {
                 .build();
     }
 
+    /**
+     * As data source we use an external database
+     *
+     * @return
+     */
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/BatchDB");
-        dataSource.setUsername("root");
-        dataSource.setPassword("");
+        dataSource.setDriverClassName(databaseDriver);
+        dataSource.setUrl(databaseUrl);
+        dataSource.setUsername(databaseUsername);
+        dataSource.setPassword(databasePassword);
         return dataSource;
     }
 
@@ -128,7 +165,7 @@ public class BatchConfiguration {
         lef.setPackagesToScan("ch.javaee.springBootBatch");
         lef.setDataSource(dataSource());
         lef.setJpaVendorAdapter(jpaVendorAdapter());
-        lef.setJpaProperties(getJpaProperties());
+        lef.setJpaProperties(new Properties());
         return lef;
     }
 
@@ -142,18 +179,6 @@ public class BatchConfiguration {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return txManager;
-    }
-
-    private Properties getJpaProperties() {
-        return new Properties() {
-            {
-                setProperty("hibernate.hbm2ddl.auto", "update");
-                //              setProperty("hibernate.dialect", "org.hibernate.dialect.SQLServerDialect");
-                setProperty("hibernate.show_sql", "false");
-                setProperty("show_sql", "false");
-                // setProperty("hibernate.format_sql", "true");
-            }
-        };
     }
 
     @Bean
