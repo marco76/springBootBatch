@@ -37,24 +37,25 @@ import java.util.Properties;
 
 
 @Configuration
-
-@EnableAutoConfiguration
 @EnableBatchProcessing
 @ComponentScan
+//spring boot configuration
+@EnableAutoConfiguration
+// file that contains the properties
 @PropertySource("classpath:application.properties")
 public class BatchConfiguration {
-    private
+
+    /*
+        Load the properties
+     */
     @Value("${database.driver}")
-    String databaseDriver;
-    private
+    private String databaseDriver;
     @Value("${database.url}")
-    String databaseUrl;
-    private
+    private String databaseUrl;
     @Value("${database.username}")
-    String databaseUsername;
-    private
+    private String databaseUsername;
     @Value("${database.password}")
-    String databasePassword;
+    private String databasePassword;
 
 
     /**
@@ -84,6 +85,7 @@ public class BatchConfiguration {
     /**
      * The ItemProcessor is called after a new line is read and it allows the developer
      * to transform the data read
+     * In our example it simply return the original object
      *
      * @return
      */
@@ -92,7 +94,10 @@ public class BatchConfiguration {
         return new PersonItemProcessor();
     }
 
-
+    /**
+     * Nothing special here a simple JpaItemWriter
+     * @return
+     */
     @Bean
     public ItemWriter<Person> writer() {
         JpaItemWriter writer = new JpaItemWriter<Person>();
