@@ -6,11 +6,11 @@
 
     <groupId>springBootBatch</groupId>
     <artifactId>springBootBatch</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>0.5.0.M5</version>
+        <version>1.5.8.RELEASE</version>
     </parent>
     <dependencies>
         <dependency>
@@ -26,14 +26,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.26</version>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-
             </plugin>
         </plugins>
     </build>
