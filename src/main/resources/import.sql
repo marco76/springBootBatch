@@ -1,11 +1,11 @@
 
-drop table BatchDB.Batch_JOB_EXECUTION_CONTEXT;
-drop table BatchDB.Batch_JOB_EXECUTION_PARAMS;
-drop table BatchDB.Batch_JOB_EXECUTION_SEQ;
-drop table BatchDB.Batch_JOB_SEQ;
-drop table BatchDB.Batch_STEP_EXECUTION_CONTEXT;
-drop table BatchDB.Batch_STEP_EXECUTION_SEQ;
-drop table BatchDB.Batch_STEP_EXECUTION;
-drop table BatchDB.Batch_JOB_EXECUTION;
-drop table BatchDB.Batch_JOB_INSTANCE;
+drop table batch_db_example.Batch_JOB_EXECUTION_CONTEXT;
+drop table batch_db_example.Batch_JOB_EXECUTION_PARAMS;
+drop table batch_db_example.Batch_JOB_EXECUTION_SEQ;
+drop table batch_db_example.Batch_JOB_SEQ;
+drop table batch_db_example.Batch_STEP_EXECUTION_CONTEXT;
+drop table batch_db_example.Batch_STEP_EXECUTION_SEQ;
+drop table batch_db_example.Batch_STEP_EXECUTION;
+drop table batch_db_example.Batch_JOB_EXECUTION;
+drop table batch_db_example.Batch_JOB_INSTANCE;
 
