@@ -179,7 +179,7 @@ public class BatchConfiguration {
         jpaVendorAdapter.setGenerateDdl(true);
         jpaVendorAdapter.setShowSql(false);
 
-        jpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+        jpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL8Dialect");
         return jpaVendorAdapter;
     }
 
